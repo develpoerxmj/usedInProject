@@ -1,1 +1,280 @@
+package com.cqgk.clerk.adapter;
 
+import android.support.annotation.IdRes;
+import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.TextView;
+
+import com.cqgk.clerk.R;
+import com.cqgk.clerk.bean.SpecsBean;
+import com.cqgk.clerk.helper.NavigationHelper;
+
+import java.util.List;
+
+/**
+ * Created by sz132 on 2017/11/15.
+ */
+
+public class PriceSetAdapter extends RecyclerView.Adapter<PriceSetAdapter.ViewHolder> {
+
+    private List<SpecsBean.SpecsBeanItem> mList;
+    private TextChangeListener mTextChangeListener;
+
+    public void setTextChangeListener(TextChangeListener textChangeListener) {
+        mTextChangeListener = textChangeListener;
+    }
+
+    public List<SpecsBean.SpecsBeanItem> getList() {
+        return mList;
+    }
+
+    public void setList(List<SpecsBean.SpecsBeanItem> list) {
+        mList = list;
+    }
+
+    @Override
+    public PriceSetAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.activity_set_price_item, parent, false));
+    }
+
+    @Override
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
+        if (position == 0){
+            holder.mLinearLayout.setVisibility(View.GONE);
+        }else {
+            holder.mLinearLayout.setVisibility(View.VISIBLE);
+            holder.mTvCode.setText("商品条码：");
+            holder.mTvPrice.setText("商品单价：");
+            holder.mTvMemberPrice.setText("会员价：");
+            holder.mTvIntegral.setText("获得积分设置：");
+        }
+        if (!TextUtils.isEmpty(mList.get(position).getDiscount())){
+            if ("9".equals(mList.get(position).getDiscount())){
+                holder.mRbDis9.setChecked(true);
+            }
+            if ("95".equals(mList.get(position).getDiscount())){
+                holder.mRbDis95.setChecked(true);
+            }
+            if ("98".equals(mList.get(position).getDiscount())){
+                holder.mRbDis98.setChecked(true);
+            }
+            if ("no".equals(mList.get(position).getDiscount())){
+                holder.mRbDisNo.setChecked(true);
+            }
+        }
+        if (!TextUtils.isEmpty(mList.get(position).getSpecDesc())){
+            if (mList.get(position).getSpecDesc().endsWith(";")){
+                mList.get(position).setSpecDesc(mList.get(position).getSpecDesc().substring(0, mList.get(position).getSpecDesc().length() - 1));
+            }
+            holder.specificationsName.setText(getFormatString(mList.get(position).getSpecDesc()));
+        }
+        //商品条码
+        if (holder.mEtCode.getTag() instanceof TextWatcher){
+            holder.mEtCode.removeTextChangedListener((TextWatcher) holder.mEtCode.getTag());
+        }
+        if (mList.get(position).getBarCode() != null){
+            holder.mEtCode.setText(mList.get(position).getBarCode());
+        }
+        WatchTextChangeListener mListener1 = new WatchTextChangeListener() {
+            @Override
+            public void afterTextChanged(Editable editable) {
+                mTextChangeListener.textChange(position, editable.toString(), 1);
+            }
+        };
+        holder.mEtCode.addTextChangedListener(mListener1);
+        holder.mEtCode.setTag(mListener1);
+        //商品价格
+        if (holder.mEtPrice.getTag() instanceof TextWatcher){
+            holder.mEtPrice.removeTextChangedListener((TextWatcher) holder.mEtPrice.getTag());
+        }
+        if (mList.get(position).getRetailPrice() != null){
+            holder.mEtPrice.setText(mList.get(position).getRetailPrice());
+        }
+        WatchTextChangeListener mListener2 = new WatchTextChangeListener() {
+            @Override
+            public void afterTextChanged(Editable editable) {
+                mTextChangeListener.textChange(position, editable.toString(), 2);
+            }
+        };
+        holder.mEtPrice.addTextChangedListener(mListener2);
+        holder.mEtPrice.setTag(mListener2);
+        //会员价格
+        if (holder.mEtMemberPrice.getTag() instanceof TextWatcher){
+            holder.mEtMemberPrice.removeTextChangedListener((TextWatcher) holder.mEtMemberPrice.getTag());
+        }
+        if (mList.get(position).getVipPrice() != null){
+            holder.mEtMemberPrice.setText(mList.get(position).getVipPrice());
+        }
+        WatchTextChangeListener mListener3 = new WatchTextChangeListener() {
+            @Override
+            public void afterTextChanged(Editable editable) {
+                mTextChangeListener.textChange(position, editable.toString(), 3);
+            }
+        };
+        holder.mEtCode.addTextChangedListener(mListener3);
+        holder.mEtCode.setTag(mListener3);
+        //商品积分
+        if (holder.mEtIntegral.getTag() instanceof TextWatcher){
+            holder.mEtIntegral.removeTextChangedListener((TextWatcher) holder.mEtIntegral.getTag());
+        }
+        if (mList.get(position).getClerkBonus() != null){
+            holder.mEtIntegral.setText(mList.get(position).getClerkBonus());
+        }
+        WatchTextChangeListener mListener4 = new WatchTextChangeListener() {
+            @Override
+            public void afterTextChanged(Editable editable) {
+                mTextChangeListener.textChange(position, editable.toString(), 4);
+            }
+        };
+        holder.mEtIntegral.addTextChangedListener(mListener4);
+        holder.mEtIntegral.setTag(mListener4);
+
+
+//        holder.mEtCode.addTextChangedListener(new WatchTextChangeListener() {
+//            @Override
+//            public void afterTextChanged(Editable editable) {
+//                mTextChangeListener.textChange(position, editable.toString(), 1);
+//            }
+//        });
+//        holder.mEtPrice.addTextChangedListener(new WatchTextChangeListener() {
+//            @Override
+//            public void afterTextChanged(Editable editable) {
+//                mTextChangeListener.textChange(position, editable.toString(), 2);
+//            }
+//        });
+//        holder.mEtMemberPrice.addTextChangedListener(new WatchTextChangeListener() {
+//            @Override
+//            public void afterTextChanged(Editable editable) {
+//                mTextChangeListener.textChange(position, editable.toString(), 3);
+//            }
+//        });
+//        holder.mEtIntegral.addTextChangedListener(new WatchTextChangeListener() {
+//            @Override
+//            public void afterTextChanged(Editable editable) {
+//                mTextChangeListener.textChange(position, editable.toString(), 4);
+//            }
+//        });
+        holder.mLinearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                holder.mLayout.setVisibility(holder.mLayout.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
+                if (holder.mLayout.getVisibility() == View.VISIBLE){
+                    holder.image.setImageResource(R.mipmap.icon_pull_down);
+                }else {
+                    holder.image.setImageResource(R.mipmap.icon_pull_up);
+                }
+            }
+        });
+        holder.mRgDiscount.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, @IdRes int i) {
+                if (!TextUtils.isEmpty(mList.get(position).getRetailPrice())){
+                    if (i == R.id.rb_discount_9){
+                        mTextChangeListener.textChange(position, mList.get(position).getRetailPrice(), 5);
+                    }else if (i == R.id.rb_discount_95){
+                        mTextChangeListener.textChange(position, mList.get(position).getRetailPrice(), 6);
+                    }else if (i == R.id.rb_discount_98){
+                        mTextChangeListener.textChange(position, mList.get(position).getRetailPrice(), 7);
+                    }else if (i == R.id.rb_discount_no){
+                        mTextChangeListener.textChange(position, mList.get(position).getRetailPrice(), 8);
+                    }
+                }
+            }
+        });
+        holder.mIvScan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                NavigationHelper.getInstance().startCapture(5, position, "");
+            }
+        });
+    }
+
+    @Override
+    public int getItemCount() {
+        return mList.size();
+    }
+
+    class ViewHolder extends RecyclerView.ViewHolder {
+        LinearLayout mLinearLayout;
+        LinearLayout mLayout;
+        TextView specificationsName;
+        ImageView image;
+        EditText mEtCode;
+        EditText mEtPrice;
+        EditText mEtMemberPrice;
+        EditText mEtIntegral;
+        TextView mTvCode;
+        TextView mTvPrice;
+        TextView mTvMemberPrice;
+        TextView mTvIntegral;
+        RadioGroup mRgDiscount;
+        RadioButton mRbDis9;
+        RadioButton mRbDis95;
+        RadioButton mRbDis98;
+        RadioButton mRbDisNo;
+        ImageView mIvScan;
+        public ViewHolder(View itemView) {
+            super(itemView);
+            mLinearLayout = (LinearLayout) itemView.findViewById(R.id.ll_specifications_name);
+            mLayout = (LinearLayout) itemView.findViewById(R.id.ll_set_area);
+            specificationsName = (TextView) itemView.findViewById(R.id.tv_specifications_name);
+            image = (ImageView) itemView.findViewById(R.id.iv_image);
+            mEtCode = (EditText) itemView.findViewById(R.id.et_code);
+            mEtPrice = (EditText) itemView.findViewById(R.id.et_price);
+            mEtMemberPrice = (EditText) itemView.findViewById(R.id.et_member_price);
+            mEtIntegral = (EditText) itemView.findViewById(R.id.et_integral);
+            mTvCode = (TextView) itemView.findViewById(R.id.tv_code);
+            mTvPrice = (TextView) itemView.findViewById(R.id.tv_price);
+            mTvMemberPrice = (TextView) itemView.findViewById(R.id.tv_member_price);
+            mTvIntegral = (TextView) itemView.findViewById(R.id.tv_integral);
+            mRgDiscount = (RadioGroup) itemView.findViewById(R.id.rg_discount);
+            mRbDis9 = (RadioButton) itemView.findViewById(R.id.rb_discount_9);
+            mRbDis95 = (RadioButton) itemView.findViewById(R.id.rb_discount_95);
+            mRbDis98 = (RadioButton) itemView.findViewById(R.id.rb_discount_98);
+            mRbDisNo = (RadioButton) itemView.findViewById(R.id.rb_discount_no);
+            mIvScan = (ImageView) itemView.findViewById(R.id.iv_image_scan);
+        }
+    }
+
+    /**
+     * 格式化
+     * @param specDesc
+     * @return
+     */
+    private String getFormatString(String specDesc) {
+        StringBuilder builder = new StringBuilder();
+        if (TextUtils.isEmpty(specDesc)){
+            return "";
+        }else {
+            String[] strings = specDesc.split(";");
+            for (String string : strings){
+                String[] names = string.split(":");
+                builder.append(names[1]);
+            }
+        }
+        return builder.toString()+"";
+    }
+
+    public interface TextChangeListener{
+        void textChange(int position, String name, int type);
+    }
+
+    abstract class WatchTextChangeListener implements TextWatcher{
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
+    }
+}
