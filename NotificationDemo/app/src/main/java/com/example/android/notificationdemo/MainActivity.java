@@ -46,6 +46,12 @@ public class MainActivity extends AppCompatActivity {
                 sendSubscribeMessage();
             }
         });
+        findViewById(R.id.btn_anther).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, TestActivity.class));
+            }
+        });
     }
 
     @TargetApi(Build.VERSION_CODES.O)

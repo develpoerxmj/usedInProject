@@ -25,4 +25,14 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginTop="24dp"/>
+
+    <Button
+        android:id="@+id/btn_anther"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="anther"
+        app:layout_constraintTop_toBottomOf="@id/btn_subscribe"
+        android:layout_marginTop="24dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
 </android.support.constraint.ConstraintLayout>
